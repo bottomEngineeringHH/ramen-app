@@ -1,0 +1,178 @@
+// prisma/schema.prisma
+
+// データベースの接続情報を提供する方法を設定します。
+// 今回は環境変数（.envファイル）から情報を読み込むように設定します。
+datasource db {
+  // データベースの種類を指定します。今回はPostgreSQLです。
+  provider = "postgresql"
+  // データベースの接続URLは、.envファイルに定義された環境変数から取得します。
+  url      = env("DATABASE_URL")
+}
+
+// Prisma Clientという、TypeScriptでDB操作を行うためのツールを生成する設定です。
+generator client {
+  // 生成するクライアントはJavaScript/TypeScript用です。
+  provider = "prisma-client-js"
+}
+
+// -------------------------------------------------------------
+// --- コアデータテーブルの定義 ---
+// -------------------------------------------------------------
+// RamenStore (ラーメン店舗の情報)を管理するテーブルを定義します。
+model RamenStore {
+  // id: このテーブルの主キー（Primary Key）で、レコードを一意に識別する番号です。
+  // Int型（整数）で、@id（主キー）と@default(autoincrement())（自動採番）を設定しています。
+  id        Int      @id @default(autoincrement())
+  
+  // name: 店名。String型（文字列）で、@unique（一意性制約）により、同じ店名は登録できません。
+  name      String   @unique 
+  
+  // latitude: 緯度。Float型（浮動小数点数）で、場所情報（Google Map連携）に必須です。
+  latitude  Float
+  
+  // longitude: 経度。Float型（浮動小数点数）で、場所情報に必須です。
+  longitude Float
+  
+  // address: 住所。String型で、?(クエスチョンマーク)が付いているため、入力は任意（null許容）です。
+  address   String?
+  
+  // reviews: 関連付け（リレーション）。
+  // このRamenStoreモデルに関連付けられたRamenReviewモデル（レビュー）が複数あることを示します。
+  reviews   RamenReview[] 
+}
+
+// RamenReview (ユーザーが登録した個別のレビュー・ラーメン情報)を管理するテーブルです。
+model RamenReview {
+  // id: このレビューテーブルの主キー。自動採番の整数です。
+  id            Int      @id @default(autoincrement())
+  
+  // store: 関連付け。RamenStoreモデルとのリレーションを定義します。
+  // fields: [storeId]が、references: [id]（RamenStoreのid）を参照することを意味します。
+  store         RamenStore @relation(fields: [storeId], references: [id])
+  
+  // storeId: 外部キー（Foreign Key）。どの店舗のレビューかを示すIDで、必須です。
+  storeId       Int
+  
+  // genre: 関連付け。Genre（ジャンルマスタ）テーブルとのリレーションです。
+  genre         Genre    @relation(fields: [genreId], references: [id])
+  // genreId: 外部キー。どのジャンルかを示すIDで、必須です。
+  genreId       Int
+  
+  // noodle: 関連付け。NoodleType（麺の種類マスタ）テーブルとのリレーションです。
+  noodle        NoodleType @relation(fields: [noodleId], references: [id])
+  // noodleId: 外部キー。どの麺の種類かを示すIDで、必須です。
+  noodleId      Int
+  
+  // eatingScene: 関連付け。EatingScene（食べるシーンマスタ）テーブルとのリレーションです。
+  eatingScene   EatingScene @relation(fields: [eatingSceneId], references: [id])
+  // eatingSceneId: 外部キー。どのシーンかを示すIDで、必須です。
+  eatingSceneId Int
+  
+  // comment: フリーコメント。String型で、任意（null許容）です。
+  comment       String?
+  
+  // vibe: 雰囲気（ラジオボタン）。Int型で、任意です。（例: 1=良い、2=普通）
+  vibe          Int?
+  
+  // createdAt: 登録日時。DateTime型（日時）で、@default(now())により、登録時に自動で現在時刻が入ります。
+  createdAt     DateTime @default(now())
+  
+  // updatedAt: 更新日時。DateTime型で、@updatedAtにより、レコードが更新されるたびに自動で時刻が更新されます。
+  updatedAt     DateTime @updatedAt
+
+  imageUrl  String?
+
+  // どのユーザーが投稿したかをUserモデルと関連付ける
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  String   // Userモデルのid(String)と型を合わせる
+}
+
+
+// -------------------------------------------------------------
+// --- マスタデータテーブルの定義（参照用データ） ---
+// -------------------------------------------------------------
+// Genre (ラーメンジャンルマスタ)
+model Genre {
+  // id: 主キー
+  id      Int      @id @default(autoincrement())
+  // name: ジャンル名。@uniqueで重複不可です。
+  name    String   @unique
+  // reviews: 関連付け。このジャンルが紐づくRamenReviewが複数あることを示します。
+  reviews RamenReview[]
+}
+
+// NoodleType (麺の種類マスタ)
+model NoodleType {
+  // id: 主キー
+  id      Int      @id @default(autoincrement())
+  // name: 麺の種類名。@uniqueで重複不可です。
+  name    String   @unique
+  // reviews: 関連付け。
+  reviews RamenReview[]
+}
+
+// EatingScene (食べるシーンマスタ)
+model EatingScene {
+  // id: 主キー
+  id      Int      @id @default(autoincrement())
+  // name: シーン名。@uniqueで重複不可です。
+  name    String   @unique
+  // reviews: 関連付け。
+  reviews RamenReview[]
+}
+
+// -------------------------------------------------------------
+// --- ユーザ認証定義 ---
+// -------------------------------------------------------------
+// 認証アカウント（GitHubやGoogleなど）とUserを紐づける
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  refresh_token_expires_in Int?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+// ログインセッションを管理
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ユーザー本体
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+
+  // 既存のRamenReviewモデルとUserを紐づける
+  reviews       RamenReview[]
+}
+
+// メール認証などに使うトークン
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}

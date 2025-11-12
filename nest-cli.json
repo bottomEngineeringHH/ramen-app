@@ -1,0 +1,20 @@
+{
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "backend/src", 
+  "compilerOptions": {
+    "deleteOutDir": true,
+    "webpack": true,
+    "plugins": []
+  },
+  "projects": {
+    "backend": {
+      "type": "application",
+      "root": "backend",
+      "entryFile": "main", 
+      "sourceRoot": "backend/src",
+      "compilerOptions": {
+        "outputPath": "dist"
+      }
+    }
+  }
+}
