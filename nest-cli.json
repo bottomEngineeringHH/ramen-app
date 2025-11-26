@@ -3,7 +3,7 @@
   "sourceRoot": "backend/src", 
   "compilerOptions": {
     "deleteOutDir": true,
-    "webpack": true,
+    "webpack": false,
     "plugins": []
   },
   "projects": {
