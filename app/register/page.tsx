@@ -55,9 +55,9 @@ export default function RegisterRamenPage() {
           // 取得したデータをフォームの型に変換し、フォームの状態にセット
           setFormData(reviewToFormData(reviewData));
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error("Data fetch error:", error);
-        setMessage(MESSAGES.E_LOAD_DATA + ` ${error.message}`);
+        setMessage(MESSAGES.E_LOAD_DATA + ` ${error}`);
       } finally {
         setIsLoading(false);
       }

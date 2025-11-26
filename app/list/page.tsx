@@ -25,9 +25,9 @@ export default function RamenListPage() {
       }
       const data: RamenReviewWithRelations[] = await response.json();
       setReviews(data);
-    } catch (e: any) {
+    } catch (e: unknown) {
+      // TODO:エラー内容に応じて出力するメッセージを変更する
       console.error("Fetch error:", e);
-      setError(e.message);
     } finally {
       setIsLoading(false);
     }
@@ -83,6 +83,7 @@ export default function RamenListPage() {
     } catch (error: unknown) {
       // TODO:エラー内容に応じて出力するメッセージを変更する
       console.error("Delete error:", error);
+      
     }
   };
 
