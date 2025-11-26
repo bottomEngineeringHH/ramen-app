@@ -18,7 +18,8 @@ async function bootstrap() {
 
   // CORSを有効にする設定 (フロントエンドの3000番ポートからのアクセスを許可するため)
   app.enableCors({
-    origin: 'http://localhost:3000', // Next.jsアプリのオリジン
+    origin: ['http://localhost:3000', // Next.jsアプリのオリジン
+    process.env.FRONTEND_URL || '',],
     credentials: true,
   });
 
