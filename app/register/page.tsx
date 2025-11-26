@@ -2,7 +2,7 @@
 
 'use client'; 
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation'; // URLパラメータ取得用
 import { RamenFormData, FormErrors, RamenReviewWithRelations, reviewToFormData } from '@/components/types/ramen';
 import { RamenMasters, MasterItem } from '@/components/types/master';
@@ -14,7 +14,7 @@ import { signIn } from 'next-auth/react';
 // APIのベースURL
 const API_BASE_URL = 'http://localhost:3001/ramen';
 
-export default function RegisterRamenPage() {
+function RegisterContent() {
   const searchParams = useSearchParams(); // URLのクエリパラメータを取得
   const reviewId = searchParams.get('id'); // URLから 'id' パラメータを取得 (編集モードならIDが入る)
   const isEditMode = !!reviewId; // IDがあれば編集モード
@@ -345,5 +345,14 @@ export default function RegisterRamenPage() {
         <input type="hidden" name="longitude" value={formData.longitude} />
       </form>
     </main>
+  );
+}
+
+export default function RegisterRamenPage() {
+  return (
+    // fallback は読み込み中に一瞬表示される内容
+    <Suspense fallback={<div style={{ textAlign: 'center', padding: '50px' }}>Loading...</div>}>
+      <RegisterContent />
+    </Suspense>
   );
 }
