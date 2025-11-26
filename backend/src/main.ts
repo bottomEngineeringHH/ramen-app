@@ -30,7 +30,10 @@ async function bootstrap() {
   }));
 
   // 💡 ポート番号3001でサーバーを起動（Next.jsの3000と競合しないように）
-  await app.listen(3001);
+  // Renderは process.env.PORT を自動で注入する。なければ3001。
+  // '0.0.0.0' を指定しないと、外部からアクセスできない場合がある。
+  const port = process.env.PORT || 3001;
+  await app.listen(port, '0.0.0.0');
   console.log(`NestJS Application is running on: ${await app.getUrl()}`);
 }
 bootstrap();
