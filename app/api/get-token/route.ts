@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
   
   // getTokenはサーバーサイドでのみ実行可能
   // リクエスト(req)からHttpOnlyクッキーを読み取り、生のJWT文字列を取得
-  const token = await getToken({ req: req as any, secret, raw: true });
+  const token = await getToken({ req: req as unknown as NextRequest, secret, raw: true });
 
   if (token) {
     // 生のJWTトークンをクライアントにJSONとして返す

@@ -5,7 +5,7 @@
 import React, { useState, useEffect } from 'react';
 import { RamenReviewWithRelations } from '@/components/types/ramen'; // RamenReviewWithRelationsをインポート
 import { MESSAGES } from '../constants/messages_ja';
-import { REGISTER_FORM, LIST_PAGE } from '../constants/caption_ja';
+import { LIST_PAGE } from '../constants/caption_ja';
 import LoginButton from '@/components/LoginButton';
 
 const API_BASE_URL = 'http://localhost:3001/ramen';
@@ -13,7 +13,7 @@ const API_BASE_URL = 'http://localhost:3001/ramen';
 export default function RamenListPage() {
   const [reviews, setReviews] = useState<RamenReviewWithRelations[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error] = useState<string | null>(null);
 
   // データの取得ロジック (再利用しやすいように関数化)
   const fetchReviews = async () => {
@@ -83,7 +83,6 @@ export default function RamenListPage() {
     } catch (error: unknown) {
       // TODO:エラー内容に応じて出力するメッセージを変更する
       console.error("Delete error:", error);
-      
     }
   };
 
