@@ -10,7 +10,7 @@
     "seed": "ts-node -r dotenv/config prisma/seed.ts",
     "start:nest": "nest start --watch --preserveWatchOutput --project backend",
     "start:dev": "ts-node --project backend/tsconfig.json -r tsconfig-paths/register backend/src/main.ts",
-    "build:backend": "nest build"
+    "build:backend": "nest build --webpack=false --path ./dist"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",
