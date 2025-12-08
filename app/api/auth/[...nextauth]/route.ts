@@ -5,6 +5,11 @@ import GitHub from "next-auth/providers/github" // GitHubプロバイダー
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import { prisma } from "@/lib/prisma" // 4-1で作成したPrismaインスタンス
 
+console.log("---------------------------------------------------");
+console.log("DEBUG: GITHUB_ID value:", process.env.GITHUB_ID); 
+console.log("DEBUG: GITHUB_SECRET exists?", !!process.env.GITHUB_SECRET);
+console.log("---------------------------------------------------");
+
 // NextAuthのハンドラを定義
 const handler = NextAuth({
   // データベースアダプタの設定
