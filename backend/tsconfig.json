@@ -5,14 +5,14 @@
     
     // baseUrlを "src" に設定
     // (インポートパスの解決は src フォルダを基準に行う)
-    "baseUrl": "..",
+    //"baseUrl": "..",
     
     // pathsでエイリアスを定義
     // ("@/constants/*" というパスは、srcフォルダから見て "../../constants/*" にある)
-    "paths": {
-      "@/constants/*": ["app/constants/*"],
-      "@/backend/*": ["backend/src/*"]
-    },
+    //"paths": {
+    //  "@/constants/*": ["app/constants/*"],
+    //  "@/backend/*": ["backend/src/*"]
+    //},
     
     "esModuleInterop": true,
     "resolveJsonModule": true,
@@ -27,7 +27,7 @@
   },
   
   // (srcフォルダ"と"constantsフォルダの両方をコンパイル対象に含める)
-  "include": ["src/**/*", "..app/constants/**/*"],
+  "include": ["src/**/*", "../app/constants/**/*"],
   
   "exclude": ["node_modules", "dist", "test"]
 }

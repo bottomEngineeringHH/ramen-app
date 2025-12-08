@@ -4,7 +4,7 @@ import { Injectable, BadRequestException, NotFoundException } from '@nestjs/comm
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateRamenDto } from './dto/create-ramen.dto';
 import { UpdateRamenDto } from './dto/update-ramen.dto';
-import { MESSAGES } from '@/constants/messages_ja';
+import { MESSAGES } from '../../../app/constants/messages_ja';
 
 @Injectable()
 export class RamenService {

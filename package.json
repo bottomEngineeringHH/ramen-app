@@ -31,8 +31,8 @@
     "react-dom": "^19.2.0",
     "reflect-metadata": "^0.2.2",
     "ts-loader": "^9.5.4",
-    "webpack": "^5.102.1",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "webpack": "^5.102.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

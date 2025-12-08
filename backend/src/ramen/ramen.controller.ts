@@ -4,7 +4,7 @@ import { Controller, Post, Body, UsePipes, ValidationPipe, Get, Param, BadReques
 import { RamenService } from './ramen.service';
 import { CreateRamenDto } from './dto/create-ramen.dto';
 import { UpdateRamenDto } from './dto/update-ramen.dto';
-import { MESSAGES } from '@/constants/messages_ja';
+import { MESSAGES } from '../../../app/constants/messages_ja';
 import { NextAuthGuard } from '../auth/next-auth.guard';
 
 // @Controller('ramen'): APIのルートパスを /ramen に設定 (例: http://localhost:3001/ramen)
