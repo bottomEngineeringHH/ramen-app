@@ -8,7 +8,7 @@ import { MESSAGES } from '../constants/messages_ja';
 import { LIST_PAGE } from '../constants/caption_ja';
 import LoginButton from '@/components/LoginButton';
 
-const API_BASE_URL = 'http://localhost:3001/ramen';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001/ramen';
 
 export default function RamenListPage() {
   const [reviews, setReviews] = useState<RamenReviewWithRelations[]>([]);

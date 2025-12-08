@@ -11,8 +11,7 @@ import { MESSAGES } from '../constants/messages_ja';
 import { REGISTER_FORM, LIST_PAGE } from '../constants/caption_ja';
 import { signIn } from 'next-auth/react';
 
-// APIのベースURL
-const API_BASE_URL = 'http://localhost:3001/ramen';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001/ramen';
 
 function RegisterContent() {
   const searchParams = useSearchParams(); // URLのクエリパラメータを取得
