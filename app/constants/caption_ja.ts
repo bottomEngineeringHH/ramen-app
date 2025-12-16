@@ -13,6 +13,7 @@ export const REGISTER_FORM = {
   VIBE_GOOD: '良い（おしゃれ/清潔）',
   VIBE_NORMAL: '普通（大衆的）',
   VIBE_DEEP: '独特（ディープ）',
+  PHOTO: '写真',
   COMMENT: 'フリーコメント (任意):',
   REGISTER_BUTTON: '登録',
   UPDATE_BUTTON: '更新',

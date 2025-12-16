@@ -1,7 +1,7 @@
 // backend/src/ramen/dto/create-ramen.dto.ts
 
 // NestJSの入力検証ライブラリから必要なデコレーターをインポート
-import { IsString, IsNumber, IsOptional, IsNotEmpty, IsInt, Min } from 'class-validator';
+import { IsArray, IsString, IsNumber, IsOptional, IsNotEmpty, IsInt, Min } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class CreateRamenDto {
@@ -39,6 +39,11 @@ export class CreateRamenDto {
     @IsInt()
     @Min(1)
     eatingSceneId!: number;
+
+  @IsOptional()
+    @IsArray()
+    @IsString({ each: true })
+    photos?: string[];
 
   // --- 任意項目 ---
   
