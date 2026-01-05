@@ -61,6 +61,8 @@ export class RamenService {
         comment: createRamenDto.comment,
         vibe: createRamenDto.vibe,
 
+        imageUrl: createRamenDto.photos?.[0],
+
         // リレーション (connectを使用)
         store: {
           connect: { id: store.id }
@@ -98,6 +100,8 @@ export class RamenService {
           // 1. スカラー値（文字列や数値）はそのまま更新
           comment: updateRamenDto.comment,
           vibe: updateRamenDto.vibe,
+
+          imageUrl: updateRamenDto.photos?.[0],
 
           // 2. 外部キー（ID）は 'connect' を使ってリレーションを更新する
           //    'genreId: ...' ではなく 'genre: { connect: ... }' と書く
