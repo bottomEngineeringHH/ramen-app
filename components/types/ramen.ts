@@ -5,6 +5,7 @@ export type RamenReviewWithRelations = {
   id: number;
   comment: string | null;
   vibe: number | null;
+  imageUrl: string | null;
   createdAt: string;
   
   // 関連データ（NestJSでincludeした部分）

@@ -102,12 +102,12 @@ export default function RamenListPage() {
       <main style={{ padding: '20px' }}>
         <LoginButton />
         <p>まだラーメン情報が登録されていません。</p>
-        <a 
-          href="/register" 
-          style={{ 
-            color: '#3498db', 
-            textDecoration: 'underline', 
-            marginLeft: '10px' 
+        <a
+          href="/register"
+          style={{
+            color: '#3498db',
+            textDecoration: 'underline',
+            marginLeft: '10px'
           }}
         >
           {LIST_PAGE.CREATE_NEW}
@@ -131,6 +131,20 @@ export default function RamenListPage() {
             style={{ border: '1px solid #ccc', padding: '15px', borderRadius: '8px', boxShadow: '2px 2px 5px rgba(0,0,0,0.1)' }}
           >
             <h2>{review.store.name}</h2>
+            {review.imageUrl && (
+              <div style={{ margin: '10px 0' }}>
+                <img
+                  src={review.imageUrl}
+                  alt="Ramen"
+                  style={{
+                    maxWidth: '100%',
+                    maxHeight: '300px',
+                    objectFit: 'cover',
+                    borderRadius: '8px'
+                  }}
+                />
+              </div>
+            )}
             <p><strong>{LIST_PAGE.CREATE_DATE}</strong> {new Date(review.createdAt).toLocaleDateString()}</p>
             <p><strong>{LIST_PAGE.GENRE}</strong> {review.genre.name} | <strong>{LIST_PAGE.NOODLE}</strong> {review.noodle.name}</p>
             <p><strong>{LIST_PAGE.SCENE}</strong> {review.eatingScene.name}</p>
