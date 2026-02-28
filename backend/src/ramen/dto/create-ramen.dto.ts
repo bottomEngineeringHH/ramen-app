@@ -43,7 +43,7 @@ export class CreateRamenDto {
   @IsOptional()
     @IsArray()
     @IsString({ each: true })
-    photos?: string[];
+    imageUrl?: string[];
 
   // --- 任意項目 ---
   

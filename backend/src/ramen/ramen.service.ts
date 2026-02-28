@@ -61,7 +61,7 @@ export class RamenService {
         comment: createRamenDto.comment,
         vibe: createRamenDto.vibe,
 
-        imageUrl: createRamenDto.photos?.[0],
+        imageUrl: createRamenDto.imageUrl?.[0],
 
         // リレーション (connectを使用)
         store: {
@@ -101,7 +101,7 @@ export class RamenService {
           comment: updateRamenDto.comment,
           vibe: updateRamenDto.vibe,
 
-          imageUrl: updateRamenDto.photos?.[0],
+          imageUrl: updateRamenDto.imageUrl?.[0],
 
           // 2. 外部キー（ID）は 'connect' を使ってリレーションを更新する
           //    'genreId: ...' ではなく 'genre: { connect: ... }' と書く
