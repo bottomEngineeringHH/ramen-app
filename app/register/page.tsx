@@ -157,13 +157,13 @@ function RegisterContent() {
 
       const submitData = {
         ...currentFormData,
-        photos: imageUrl ? [imageUrl] : [], // 配列で渡す設計の場合
+        imageUrl: imageUrl ? [imageUrl] : [], // 配列で渡す設計の場合
       };
       const response = await fetch(url, {
         method: method,
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         // 送信データは最新のcurrentFormDataを使う
-        body: JSON.stringify(currentFormData),
+        body: JSON.stringify(submitData),
       });
 
       if (response.ok) {
