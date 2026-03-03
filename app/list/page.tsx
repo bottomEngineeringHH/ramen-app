@@ -1,8 +1,8 @@
-// app/list/page.tsx (最終版)
+// app/list/page.tsx
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { RamenReviewWithRelations } from '@/components/types/ramen'; // RamenReviewWithRelationsをインポート
 import { MESSAGES } from '../constants/messages_ja';
 import { LIST_PAGE } from '../constants/caption_ja';
@@ -14,6 +14,27 @@ export default function RamenListPage() {
   const [reviews, setReviews] = useState<RamenReviewWithRelations[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedGenre, setSelectedGenre] = useState(0);
+
+  // データ絞り込み処理
+  const filteredReviews = useMemo(() => {
+    // まだデータがない場合は空配列を返す
+    if (!reviews) return [];
+
+    return reviews.filter((review) => {
+      // 店名かコメントに検索文字が含まれているか
+      const matchText = 
+        review.store.name.includes(searchTerm) || 
+        (review.comment && review.comment.includes(searchTerm));
+      
+      // ジャンルが「すべて(0)」か、選んだジャンルと一致するか
+      const matchGenre = 
+        selectedGenre === 0 || review.genre.id === selectedGenre;
+
+      return matchText && matchGenre;
+    });
+  }, [reviews, searchTerm, selectedGenre]);
 
   // データの取得ロジック (再利用しやすいように関数化)
   const fetchReviews = async () => {
@@ -124,8 +145,29 @@ export default function RamenListPage() {
       <h1>{MESSAGES.TITLE_LIST(reviews.length)}</h1>
       <a href="/register" style={{ display: 'block', marginBottom: '20px', color: '#3498db' }}>{LIST_PAGE.CREATE_NEW}</a>
 
+      <div style={{ marginBottom: '20px', padding: '15px', backgroundColor: '#f8f9fa', borderRadius: '8px', display: 'flex', gap: '10px' }}>
+        <input 
+          type="text" 
+          placeholder="店名やコメントで検索..." 
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          style={{ padding: '8px', flex: 1, borderRadius: '4px', border: '1px solid #ccc' }}
+        />
+        <select 
+          value={selectedGenre} 
+          onChange={(e) => setSelectedGenre(Number(e.target.value))}
+          style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
+        >
+          <option value={0}>すべてのジャンル</option>
+          {/* 重複を排除したジャンルの選択肢 */}
+          {Array.from(new Map(reviews.map(r => [r.genre.id, r.genre])).values()).map((genre) => (
+            <option key={genre.id} value={genre.id}>{genre.name}</option>
+          ))}
+        </select>
+      </div>
+
       <div style={{ display: 'grid', gap: '20px' }}>
-        {reviews.map((review) => (
+        {filteredReviews.map((review) => (
           <div
             key={review.id}
             style={{ border: '1px solid #ccc', padding: '15px', borderRadius: '8px', boxShadow: '2px 2px 5px rgba(0,0,0,0.1)' }}
