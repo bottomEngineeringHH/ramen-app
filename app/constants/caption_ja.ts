@@ -33,4 +33,5 @@ export const LIST_PAGE = {
   NO_COMMENT: 'コメントなし',
   EDIT: '[編集]',
   DELETE: '[削除]',
+  ALL_GENRE: 'すべてのジャンル',
 };

@@ -35,6 +35,7 @@ export const MESSAGES = {
   E_INVALID_REVIEW_ID: 'レビューIDが不正です。',
   // 一覧画面
   E_LOAD_LIST: 'ラーメン一覧の取得に失敗しました。',
+  E_NO_ENTRY: 'ラーメン情報が登録されていません。',
   // 登録(編集)画面
   E_REQUIRED_STORENAME: '店名は必須です。',
   E_REQUIRED_STATION: '最寄り駅の入力は必須です。',

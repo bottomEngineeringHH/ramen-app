@@ -122,7 +122,7 @@ export default function RamenListPage() {
     return (
       <main style={{ padding: '20px' }}>
         <LoginButton />
-        <p>まだラーメン情報が登録されていません。</p>
+        <p>{MESSAGES.E_NO_ENTRY}</p>
         <a
           href="/register"
           style={{
@@ -158,7 +158,7 @@ export default function RamenListPage() {
           onChange={(e) => setSelectedGenre(Number(e.target.value))}
           style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
         >
-          <option value={0}>すべてのジャンル</option>
+          <option value={0}>{LIST_PAGE.ALL_GENRE}</option>
           {/* 重複を排除したジャンルの選択肢 */}
           {Array.from(new Map(reviews.map(r => [r.genre.id, r.genre])).values()).map((genre) => (
             <option key={genre.id} value={genre.id}>{genre.name}</option>
