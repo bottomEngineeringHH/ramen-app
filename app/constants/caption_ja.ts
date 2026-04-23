@@ -19,6 +19,12 @@ export const REGISTER_FORM = {
   UPDATE_BUTTON: '更新',
   SELECT_PLACEHOLDER: '選択してください',
   ERROR: 'エラー',
+  FLAVOR_CHANGE_TIMELINE: '味変タイムライン',
+  INJECTION_TIMING: '投入タイミング:',
+  ARRIVED_RAMEN: '着丼',
+  FINISH_EATING: '完食',
+  INGREDIENT_PLACEHOLDER: '例: 行者にんにく',
+  ADD_FLAVOR_CHANGE: '＋ 味変を追加する',
 };
 
 // 一覧画面で使うUIテキスト
@@ -34,4 +40,7 @@ export const LIST_PAGE = {
   EDIT: '[編集]',
   DELETE: '[削除]',
   ALL_GENRE: 'すべてのジャンル',
+  FLAVOR_CHANGE_TIMELINE: '⏱️ 味変タイムライン',
+  RAMEN_BOWL: '着丼',
+  FINISH_EATING: '完食',
 };

@@ -36,6 +36,27 @@ function RegisterContent() {
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
+  // 味変リストのStateと操作関数 ---
+  const [ajihenList, setAjihenList] = useState<{ percent: number; ingredient: string }[]>([]);
+
+  // 新しい味変入力欄を追加する（初期値は50%）
+  const addAjihen = () => {
+    setAjihenList([...ajihenList, { percent: 50, ingredient: '' }]);
+  };
+  
+  // スライダーやテキストボックスの値が変わった時にStateを更新する
+  const updateAjihen = (index: number, field: 'percent' | 'ingredient', value: number | string) => {
+    const newList = [...ajihenList];
+    // @ts-ignore (型の簡易化のため)
+    newList[index][field] = value;
+    setAjihenList(newList);
+  };
+
+  // ゴミ箱ボタンで味変入力欄を削除する
+  const removeAjihen = (index: number) => {
+    setAjihenList(ajihenList.filter((_, i) => i !== index));
+  };
+
   // --- 1. マスタデータ & 既存レビューデータの取得 ---
   useEffect(() => {
     setIsLoading(true);
@@ -56,6 +77,18 @@ function RegisterContent() {
           const reviewData: RamenReviewWithRelations = await reviewResponse.json();
           // 取得したデータをフォームの型に変換し、フォームの状態にセット
           setFormData(reviewToFormData(reviewData));
+
+          // 味変イベントもフォームに反映
+          if (reviewData.ajihenEvents && reviewData.ajihenEvents.length > 0) {
+            const formattedAjihen = reviewData.ajihenEvents.map((a: any) => ({
+              percent: a.percent,
+              ingredient: a.ingredient
+            }));
+            setAjihenList(formattedAjihen);
+          } else {
+            // 編集モードでも味変データがない場合は空に戻す（前のデータが残るのを防ぐ）
+            setAjihenList([]); 
+          }
         }
       } catch (error: unknown) {
         console.error("Data fetch error:", error);
@@ -66,7 +99,6 @@ function RegisterContent() {
     }
     fetchData();
   }, [isEditMode, reviewId]); // 依存配列: 編集モードとIDが変わったら再実行
-
 
   // --- 2. バリデーション処理 ---
   const validate = useCallback((): boolean => {
@@ -103,7 +135,6 @@ function RegisterContent() {
     setErrors(newErrors);
     return isValid;
   }, [formData]);
-
 
   // --- 3. フォーム送信処理 (POSTとPATCHを切り替える) ---
   const handleSubmit = async (e: React.FormEvent) => {
@@ -158,6 +189,7 @@ function RegisterContent() {
       const submitData = {
         ...currentFormData,
         imageUrl: imageUrl ? [imageUrl] : [], // 配列で渡す設計の場合
+        ajihenEvents: ajihenList.filter(a => a.ingredient.trim() !== ''),
       };
       const response = await fetch(url, {
         method: method,
@@ -179,7 +211,6 @@ function RegisterContent() {
     }
   };
 
-
   // フォームの入力変更ハンドラ
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -194,7 +225,6 @@ function RegisterContent() {
   if (isLoading || !masters) {
     return <main style={{ textAlign: 'center', padding: '50px' }}>{isEditMode ? MESSAGES.L_LOADING_EDIT : MESSAGES.L_LOADING_FORM}</main>;
   }
-
 
   // --- 4. フォームのレンダリング ---
   return (
@@ -375,6 +405,54 @@ function RegisterContent() {
             rows={4}
             style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
           />
+        </div>
+
+        {/* --- 8.味変タイムライン入力エリア --- */}
+        <div style={{ marginBottom: '20px', padding: '15px', border: '1px dashed #ccc', borderRadius: '8px', backgroundColor: '#fafafa' }}>
+          <h3 style={{ margin: '0 0 10px 0', fontSize: '1em' }}>{REGISTER_FORM.FLAVOR_CHANGE_TIMELINE}</h3>
+          
+          {ajihenList.map((ajihen, index) => (
+            <div key={index} style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px', backgroundColor: 'white', padding: '10px', borderRadius: '4px', border: '1px solid #eee' }}>
+              
+              {/* スライダー（0〜100） */}
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                <label style={{ fontSize: '0.8em', color: '#666' }}>{REGISTER_FORM.INJECTION_TIMING} {ajihen.percent}% ({REGISTER_FORM.ARRIVED_RAMEN} 0% 〜 {REGISTER_FORM.FINISH_EATING} 100%)</label>
+                <input 
+                  type="range" 
+                  min="0" max="100" step="5"
+                  value={ajihen.percent}
+                  onChange={(e) => updateAjihen(index, 'percent', Number(e.target.value))}
+                  style={{ cursor: 'pointer' }}
+                />
+              </div>
+
+              {/* 調味料の名前入力 */}
+              <input 
+                type="text" 
+                placeholder={REGISTER_FORM.INGREDIENT_PLACEHOLDER} 
+                value={ajihen.ingredient}
+                onChange={(e) => updateAjihen(index, 'ingredient', e.target.value)}
+                style={{ padding: '8px', border: '1px solid #ccc', borderRadius: '4px', flex: 1 }}
+              />
+
+              {/* 削除ボタン */}
+              <button 
+                type="button" 
+                onClick={() => removeAjihen(index)}
+                style={{ color: 'red', background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2em' }}
+              >
+                ✖
+              </button>
+            </div>
+          ))}
+
+          <button 
+            type="button" 
+            onClick={addAjihen}
+            style={{ padding: '8px 15px', backgroundColor: '#e74c3c', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '0.9em' }}
+          >
+            {REGISTER_FORM.ADD_FLAVOR_CHANGE}
+          </button>
         </div>
 
         <button type="submit" style={{ padding: '10px', backgroundColor: isEditMode ? '#f39c12' : '#3498db', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', width: '100%' }}>

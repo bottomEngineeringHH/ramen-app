@@ -1,6 +1,15 @@
 // components/types/ramen.ts
 
-// サーバーから受け取るラーメンレビューの完全なデータ構造
+// 味変イベント
+export type AjihenEvent = {
+  id: number;
+  percent: number;
+  ingredient: string;
+  createdAt: string; 
+  updatedAt: string;
+};
+
+// サーバーから受け取るラーメンレビューのデータ構造
 export type RamenReviewWithRelations = {
   id: number;
   comment: string | null;
@@ -27,6 +36,8 @@ export type RamenReviewWithRelations = {
     id: number;
     name: string;
   };
+
+  ajihenEvents?: AjihenEvent[];
 };
 
 // バックエンドのCreateRamenDtoと同期させるフォームのデータ構造

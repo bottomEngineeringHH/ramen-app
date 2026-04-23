@@ -21,6 +21,7 @@ export class RamenService {
         genre: true,       // ジャンル名
         noodle: true,      // 麺の種類名
         eatingScene: true, // シーン名
+        ajihenEvents: true,// 味変イベント（投入タイミングと調味料）も取得
       },
       // 新しいレビューが上に来るように降順でソート
       orderBy: {
@@ -63,6 +64,10 @@ export class RamenService {
 
         imageUrl: createRamenDto.imageUrl?.[0],
 
+        ajihenEvents: {
+          create: createRamenDto.ajihenEvents || [],
+        },
+
         // リレーション (connectを使用)
         store: {
           connect: { id: store.id }
@@ -103,6 +108,10 @@ export class RamenService {
 
           imageUrl: updateRamenDto.imageUrl?.[0],
 
+          ajihenEvents: {
+          create: updateRamenDto.ajihenEvents || [],
+                },
+
           // 2. 外部キー（ID）は 'connect' を使ってリレーションを更新する
           //    'genreId: ...' ではなく 'genre: { connect: ... }' と書く
           genre: updateRamenDto.genreId
@@ -127,7 +136,7 @@ export class RamenService {
           }
         },
         // 更新後のデータには関連情報も含める
-        include: { store: true, genre: true, noodle: true, eatingScene: true }
+        include: { store: true, genre: true, noodle: true, eatingScene: true, ajihenEvents: true },
       });
       return updatedReview;
 
@@ -183,6 +192,7 @@ export class RamenService {
         genre: true,
         noodle: true,
         eatingScene: true,
+        ajihenEvents: true,
       },
     });
   }

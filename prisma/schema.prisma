@@ -85,6 +85,9 @@ model RamenReview {
   // どのユーザーが投稿したかをUserモデルと関連付ける
   author    User     @relation(fields: [authorId], references: [id])
   authorId  String   // Userモデルのid(String)と型を合わせる
+
+  // 複数の味変アイテムを保持
+  ajihenEvents AjihenEvent[]
 }
 
 
@@ -175,4 +178,15 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+// 味変テーブル
+model AjihenEvent {
+  id         Int         @id @default(autoincrement())
+  percent    Int         // 投入したタイミング（0〜100）
+  ingredient String      // 調味料の名前（例：行者にんにく）
+  reviewId   Int         // どのレビュー（親）の味変か
+  review     RamenReview @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt // 更新時自動入力
 }

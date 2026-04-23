@@ -7,6 +7,7 @@ import { RamenReviewWithRelations } from '@/components/types/ramen'; // RamenRev
 import { MESSAGES } from '../constants/messages_ja';
 import { LIST_PAGE } from '../constants/caption_ja';
 import LoginButton from '@/components/LoginButton';
+import RamenCard from '@/components/RamenCard';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001/ramen';
 
@@ -168,40 +169,11 @@ export default function RamenListPage() {
 
       <div style={{ display: 'grid', gap: '20px' }}>
         {filteredReviews.map((review) => (
-          <div
-            key={review.id}
-            style={{ border: '1px solid #ccc', padding: '15px', borderRadius: '8px', boxShadow: '2px 2px 5px rgba(0,0,0,0.1)' }}
-          >
-            <h2>{review.store.name}</h2>
-            {review.imageUrl && (
-              <div style={{ margin: '10px 0' }}>
-                <img
-                  src={review.imageUrl}
-                  alt="Ramen"
-                  style={{
-                    maxWidth: '100%',
-                    maxHeight: '300px',
-                    objectFit: 'cover',
-                    borderRadius: '8px'
-                  }}
-                />
-              </div>
-            )}
-            <p><strong>{LIST_PAGE.CREATE_DATE}</strong> {new Date(review.createdAt).toLocaleDateString()}</p>
-            <p><strong>{LIST_PAGE.GENRE}</strong> {review.genre.name} | <strong>{LIST_PAGE.NOODLE}</strong> {review.noodle.name}</p>
-            <p><strong>{LIST_PAGE.SCENE}</strong> {review.eatingScene.name}</p>
-            <p><strong>{LIST_PAGE.COMMENT}</strong> {review.comment || LIST_PAGE.NO_COMMENT}</p>
-            <p>
-              {/* 編集リンク */}
-              <a href={`/register?id=${review.id}`} style={{ marginRight: '10px', color: 'orange' }}>{LIST_PAGE.EDIT}</a>
-
-              {/* 削除ボタンの onClick ハンドラを設定 */}
-              <button
-                onClick={() => handleDelete(review.id, review.store.name)}
-                style={{ color: 'red', border: 'none', background: 'none', cursor: 'pointer' }}
-              >{LIST_PAGE.DELETE}</button>
-            </p>
-          </div>
+          <RamenCard
+            key={review.id} 
+            review={review} 
+            onDelete={handleDelete} 
+          />
         ))}
       </div>
     </main>

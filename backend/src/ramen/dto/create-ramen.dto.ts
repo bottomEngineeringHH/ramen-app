@@ -1,8 +1,16 @@
 // backend/src/ramen/dto/create-ramen.dto.ts
 
 // NestJSの入力検証ライブラリから必要なデコレーターをインポート
-import { IsArray, IsString, IsNumber, IsOptional, IsNotEmpty, IsInt, Min } from 'class-validator';
+import { IsArray, IsString, IsNumber, IsOptional, IsNotEmpty, IsInt, Min, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
+
+class AjihenDto {
+  @IsInt()
+  percent: number;
+
+  @IsString()
+  ingredient: string;
+}
 
 export class CreateRamenDto {
   // --- 必須項目 ---
@@ -46,7 +54,6 @@ export class CreateRamenDto {
     imageUrl?: string[];
 
   // --- 任意項目 ---
-  
   // @IsOptional(): 値があってもなくても良いことを示す
   // @IsString(): 文字列であることのみ保証
   @IsOptional()
@@ -56,4 +63,10 @@ export class CreateRamenDto {
   @IsOptional()
   @IsInt()
   vibe?: number; // 雰囲気の評価（例: 1, 2, 3）
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => AjihenDto)
+  ajihenEvents?: AjihenDto[];
 }

@@ -14,8 +14,8 @@
     "strict": true,
     "noEmit": true,
     "esModuleInterop": true,
-    "module": "CommonJS",
-    "moduleResolution": "node",
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
@@ -25,19 +25,18 @@
         "name": "next"
       }
     ],
-    "baseUrl": ".",
     "paths": {
       "@/lib/*": [
-        "lib/*"
+        "./lib/*"
       ],
       "@/components/*": [
-        "components/*"
+        "./components/*"
       ],
       "@/constants/*": [
-        "constants/*"
+        "./constants/*"
       ],
       "@/app/*": [
-        "app/*"
+        "./app/*"
       ]
     }
   },

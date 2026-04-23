@@ -41,7 +41,6 @@ export class RamenController {
   async update(@Param('id') id: string, @Body() updateRamenDto: UpdateRamenDto, @Req() req: any) {
     // TODO: レビューの投稿者(authorId)と、今リクエストしてきたユーザー(req.user.userId)が
     // 一致するかどうかをService層でチェックするロジックが必要
-
     const reviewId = parseInt(id, 10);
     if (isNaN(reviewId)) {
       throw new BadRequestException(MESSAGES.E_INVALID_REVIEW_ID);
