@@ -27,7 +27,7 @@
   },
   
   // (srcフォルダ"と"constantsフォルダの両方をコンパイル対象に含める)
-  "include": ["src/**/*", "../app/constants/**/*"],
+  "include": ["src/**/*", "../app/constants/**/*", "next-env.d.ts", "**/*.ts", "**/*.tsx"],
   
   "exclude": ["node_modules", "dist", "test"]
 }
