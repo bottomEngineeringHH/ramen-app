@@ -61,4 +61,5 @@ export const TIMELINE_PAGE = {
   GARLIC: 'にんにく',
   GOING_TOMORROW: '明日行く',
   ENTER_THE_RAMWN: 'まだ投稿がありません。記念すべき最初の一杯を登録しましょう！',
+  BACK_TO_LIST: '← 一覧へ',
 }

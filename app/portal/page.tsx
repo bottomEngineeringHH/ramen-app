@@ -5,6 +5,7 @@ import { io } from 'socket.io-client';
 import { MESSAGES } from '../constants/messages_ja';
 import { TIMELINE_PAGE } from '../constants/caption_ja';
 import { useSession } from 'next-auth/react';
+import Link from 'next/link';
 
 // データを取得するためのおまじない
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -56,6 +57,9 @@ export default function TimelinePage() {
         <h1 className="text-3xl font-extrabold mb-8 text-center text-orange-500 border-b border-slate-700 pb-4">
           {TIMELINE_PAGE.NEW_MESHITERO}
         </h1>
+        <Link href="/list" className="text-sm text-slate-300 hover:text-white transition underline">
+            {TIMELINE_PAGE.BACK_TO_LIST}
+        </Link>
 
         {/* 取得したレビューの数だけカードを繰り返し表示 */}
         <div className="space-y-8">
