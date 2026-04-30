@@ -44,3 +44,21 @@ export const LIST_PAGE = {
   RAMEN_BOWL: '着丼',
   FINISH_EATING: '完食',
 };
+
+// タイムラインで使うUIテキスト
+export const TIMELINE_PAGE = {
+  NEW_MESHITERO: '🔥 最新の飯テロ',
+  NO_IMAGE: 'NO IMAGE',
+  UNKNOWN_STORE_NAME: '店舗不明',
+  UNKNOWN_GENRE: 'ジャンル不明',
+  UNKNOWN_NOODLE: '麺不明',
+  UNKNOWN_SCENE: 'シーン不明',
+  NO_COMMENT: 'コメントなし',
+  REACTION_LIKE: 'いいね',
+  AJIHEN_TIMELINE: '💡 この一杯の味変メソッド',
+  REMAINING: '残り',
+  LOOKS_DELICIOUS: 'うまそう',
+  GARLIC: 'にんにく',
+  GOING_TOMORROW: '明日行く',
+  ENTER_THE_RAMWN: 'まだ投稿がありません。記念すべき最初の一杯を登録しましょう！',
+}

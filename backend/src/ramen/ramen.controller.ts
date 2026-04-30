@@ -24,6 +24,23 @@ export class RamenController {
     return this.ramenService.findAll();
   }
 
+  // タイムライン取得用
+  @Get('timeline')
+  getTimeline() {
+    return this.ramenService.getTimeline();
+  }
+
+  // リアクションのトグル（つけ外し）用
+  @Post(':id/react')
+  toggleReaction(
+    @Param('id') id: string,
+    @Body('userId') userId: string,
+    @Body('type') type: string,
+  ) {
+    // URLパラメータのidは文字列で渡ってくるため、+id で数値に変換してサービスに渡します
+    return this.ramenService.toggleReaction(+id, userId, type);
+  }
+
   // 登録API
   @Post()
   @UseGuards(NextAuthGuard)

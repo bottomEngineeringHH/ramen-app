@@ -88,6 +88,9 @@ model RamenReview {
 
   // 複数の味変アイテムを保持
   ajihenEvents AjihenEvent[]
+
+  // Reviewに対してReactionが複数つく関係性を定義
+  reactions    Reaction[]
 }
 
 
@@ -169,6 +172,9 @@ model User {
 
   // 既存のRamenReviewモデルとUserを紐づける
   reviews       RamenReview[]
+
+  // ユーザーがつけたリアクションとの関係性を定義
+  reactions     Reaction[]
 }
 
 // メール認証などに使うトークン
@@ -189,4 +195,23 @@ model AjihenEvent {
   review     RamenReview @relation(fields: [reviewId], references: [id], onDelete: Cascade)
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt // 更新時自動入力
+}
+
+// リアクション（いいね等）テーブル
+model Reaction {
+  id        Int      @id @default(autoincrement())
+  type      String   // "FIRE"(🔥), "GARLIC"(🧄), "TOMORROW"(🍜) のどれかが入る
+  
+  // どのレビューへのリアクションか
+  reviewId  Int
+  review    RamenReview @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  
+  // 誰がリアクションしたか
+  userId    String   
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  // 同じ人が、同じレビューに、同じリアクションを「連打で複数登録」できないようにする制約
+  @@unique([reviewId, userId, type]) 
 }

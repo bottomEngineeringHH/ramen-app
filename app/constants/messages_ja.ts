@@ -17,6 +17,8 @@ export const MESSAGES = {
   // --- 情報メッセージ ---
   // 一覧画面
   I_NO_DATA: 'ラーメン情報が登録されていません。',
+  // タイムライン
+  I_DO_LOGIN: 'リアクションするにはログインが必要です。',
 
   // --- エラーメッセージ ---
   // 共通
@@ -49,4 +51,5 @@ export const MESSAGES = {
   L_LOADING_EDIT: '編集データをロード中...',
   L_LOADING_LIST: 'ラーメン情報を読み込み中...',
   L_LOADING_FORM: 'フォームを準備中...',
+  L_LOADING_MESHITERO: '飯テロ生成中...🍜',
 };

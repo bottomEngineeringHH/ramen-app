@@ -5,11 +5,12 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateRamenDto } from './dto/create-ramen.dto';
 import { UpdateRamenDto } from './dto/update-ramen.dto';
 import { MESSAGES } from '../../../app/constants/messages_ja';
+import { RamenGateway } from './ramen.gateway';
 
 @Injectable()
 export class RamenService {
   // PrismaServiceを注入（DI）
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService, private ramenGateway: RamenGateway,) { }
 
   // 一覧情報取得
   async findAll() {
@@ -86,7 +87,7 @@ export class RamenService {
         }
       },
     });
-
+    this.ramenGateway.notifyTimelineUpdate();
     return review;
   }
 
@@ -138,6 +139,7 @@ export class RamenService {
         // 更新後のデータには関連情報も含める
         include: { store: true, genre: true, noodle: true, eatingScene: true, ajihenEvents: true },
       });
+      this.ramenGateway.notifyTimelineUpdate();
       return updatedReview;
 
     } catch (error) {
@@ -155,6 +157,7 @@ export class RamenService {
         where: { id: id },
       });
 
+      this.ramenGateway.notifyTimelineUpdate();
       return deletedReview;
     } catch (error) {
       // 存在しないIDを削除しようとした場合のエラー処理
@@ -195,5 +198,46 @@ export class RamenService {
         ajihenEvents: true,
       },
     });
+  }
+
+  // タイムライン用：最新のレビュー20件を取得（リアクション付き）
+  async getTimeline() {
+    return this.prisma.ramenReview.findMany({
+      orderBy: { createdAt: 'desc' },
+      take: 20, // 最新20件に絞る
+      include: {
+        store: true,
+        genre: true,
+        noodle: true,
+        eatingScene: true,
+        ajihenEvents: true,
+        reactions: true,
+      },
+    });
+  }
+
+  // リアクションのつけ外し（トグル）
+  async toggleReaction(reviewId: number, userId: string, type: string) {
+    const existing = await this.prisma.reaction.findUnique({
+      where: {
+        reviewId_userId_type: { reviewId, userId, type },
+      },
+    });
+
+    let result;
+    if (existing) {
+      // 既にある場合は削除
+      result = await this.prisma.reaction.delete({ where: { id: existing.id } });
+    } else {
+      // ない場合は作成
+      result = await this.prisma.reaction.create({
+        data: { reviewId, userId, type },
+      });
+    }
+
+    // リアクションされた瞬間、全員の画面をリアルタイム更新！
+    this.ramenGateway.notifyTimelineUpdate();
+    
+    return result;
   }
 }
