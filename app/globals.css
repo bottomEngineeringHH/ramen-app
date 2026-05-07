@@ -1,4 +1,13 @@
 @import "tailwindcss";
+
+@layer base {
+  input[type="text"],
+  select,
+  textarea {
+    @apply border border-gray-500 bg-gray-800 text-white rounded-md p-2 w-full focus:outline-none focus:border-orange-500;
+  }
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;

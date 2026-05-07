@@ -19,6 +19,8 @@ export const MESSAGES = {
   I_NO_DATA: 'ラーメン情報が登録されていません。',
   // タイムライン
   I_DO_LOGIN: 'リアクションするにはログインが必要です。',
+  // バッジ付与
+  I_BADGE_AWARDED: (userId: string, name: string) => `🎉 ユーザー ${userId} が称号「${name}」を獲得しました！`,
 
   // --- エラーメッセージ ---
   // 共通

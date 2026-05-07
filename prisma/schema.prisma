@@ -175,6 +175,9 @@ model User {
 
   // ユーザーがつけたリアクションとの関係性を定義
   reactions     Reaction[]
+
+  // ユーザーが獲得した称号リスト
+  badges        UserBadge[]
 }
 
 // メール認証などに使うトークン
@@ -214,4 +217,30 @@ model Reaction {
 
   // 同じ人が、同じレビューに、同じリアクションを「連打で複数登録」できないようにする制約
   @@unique([reviewId, userId, type]) 
+}
+
+// 称号マスタ（どんな称号が存在するかの定義）
+model Badge {
+  id          Int         @id @default(autoincrement())
+  name        String      @unique // 称号名（例: "家系マスター", "ニンニクジャンキー"）
+  description String      // 獲得条件や説明（例: "家系ラーメンを5件投稿した証"）
+  icon        String?     // アイコン（例: "👑", "🧄" などの絵文字や画像URL）
+  
+  users       UserBadge[]
+}
+
+// ユーザーの称号獲得履歴（中間テーブル）
+model UserBadge {
+  id          Int      @id @default(autoincrement())
+  
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  badgeId     Int
+  badge       Badge    @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+  
+  unlockedAt  DateTime @default(now()) // 称号を獲得した日時
+
+  // 同じ人が同じ称号を複数回獲得できないようにする制約
+  @@unique([userId, badgeId])
 }

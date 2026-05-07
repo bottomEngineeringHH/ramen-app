@@ -6,11 +6,12 @@ import { CreateRamenDto } from './dto/create-ramen.dto';
 import { UpdateRamenDto } from './dto/update-ramen.dto';
 import { MESSAGES } from '../../../app/constants/messages_ja';
 import { RamenGateway } from './ramen.gateway';
+import { BadgeService } from '../badge/badge.service';
 
 @Injectable()
 export class RamenService {
   // PrismaServiceを注入（DI）
-  constructor(private prisma: PrismaService, private ramenGateway: RamenGateway,) { }
+  constructor(private prisma: PrismaService, private ramenGateway: RamenGateway, private badgeService: BadgeService) { }
 
   // 一覧情報取得
   async findAll() {
@@ -88,6 +89,10 @@ export class RamenService {
       },
     });
     this.ramenGateway.notifyTimelineUpdate();
+
+    // 意図的に await を外すことで、画面へのレスポンスを待たせずに裏側で処理させます
+    this.badgeService.checkAndAwardBadges(userId).catch(console.error);
+
     return review;
   }
 
