@@ -63,3 +63,17 @@ export const TIMELINE_PAGE = {
   ENTER_THE_RAMWN: 'まだ投稿がありません。記念すべき最初の一杯を登録しましょう！',
   BACK_TO_LIST: '← 一覧へ',
 }
+
+export const DASHBOARD_PAGE = {
+  TITLE: 'NEXT-GEN DASHBOARD',
+  DESCRIPTION: '飯テロ体験を最大化するデータ・インテリジェンス',
+  BACK_TO_TIMELINE: 'タイムラインへ戻る →',
+  LIFETIME_BOWLS: 'Lifetime Bowls',
+  CONQUERED_STORES: 'Conquered Stores',
+  CUP: '杯',
+  STORE: '店舗',
+  NO_DATA: 'まだデータがありません。',
+  ENTRY_REVIEW: 'レビューを登録して、称号を獲得しよう！',
+  BADGE_STATUS: 'Badge Status',
+  RECENT_CONQUERED: 'Recent Conquests',
+};

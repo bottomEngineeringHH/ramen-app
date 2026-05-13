@@ -47,6 +47,8 @@ export const MESSAGES = {
   E_REQUIRED_NOODLE_TYPE: '麺の種類を選択してください。',
   E_REQUIRED_EATING_SCENE: '食べるシーンを選択してください。',
   E_INCLUDE_INAPPROPRIATE_COMMENT: 'コメントに不適切な表現が含まれています。',
+  // ダッシュボード
+  E_NOT_LOGINED: 'ログインしてください。',
 
   // --- ローディング ---
   L_LOADING_MASTERS: 'マスタデータを読み込み中...',
@@ -54,4 +56,5 @@ export const MESSAGES = {
   L_LOADING_LIST: 'ラーメン情報を読み込み中...',
   L_LOADING_FORM: 'フォームを準備中...',
   L_LOADING_MESHITERO: '飯テロ生成中...🍜',
+  L_LOADING_DASHBOARD: 'ダッシュボードを読み込み中...'
 };

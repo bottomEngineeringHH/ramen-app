@@ -110,71 +110,75 @@ export default function RamenListPage() {
 
   // ロード中の表示
   if (isLoading) {
-    return <main style={{ padding: '20px' }}>{MESSAGES.L_LOADING_LIST}</main>;
+    return <main className="min-h-screen bg-[#0A0A0A] flex items-center justify-center"><div className="text-white text-xl animate-pulse">{MESSAGES.L_LOADING_LIST}</div></main>;
   }
 
   // エラー時の表示
   if (error) {
-    return <main style={{ padding: '20px', color: 'red' }}>{error}</main>;
+    return <main className="min-h-screen bg-[#0A0A0A] text-red-400 p-6 flex items-center justify-center"><div>{error}</div></main>;
   }
 
   // 登録データがない場合の表示
   if (reviews.length === 0) {
     return (
-      <main style={{ padding: '20px' }}>
-        <LoginButton />
-        <p>{MESSAGES.E_NO_ENTRY}</p>
-        <a
-          href="/register"
-          style={{
-            color: '#3498db',
-            textDecoration: 'underline',
-            marginLeft: '10px'
-          }}
-        >
-          {LIST_PAGE.CREATE_NEW}
-        </a>
+      <main className="min-h-screen bg-[#0A0A0A] text-white px-4 py-10">
+        <div className="w-full max-w-2xl mx-auto text-center">
+          <LoginButton />
+          <p className="text-slate-400 mt-6">{MESSAGES.E_NO_ENTRY}</p>
+          <a
+            href="/register"
+            className="inline-block mt-4 text-orange-500 hover:text-orange-400 transition underline"
+          >
+            {LIST_PAGE.CREATE_NEW}
+          </a>
+        </div>
       </main>
     );
   }
 
   // --- レビューリストのレンダリング ---
   return (
-    <main style={{ padding: '20px', maxWidth: '1000px', margin: 'auto' }}>
-      <LoginButton />
+    <main className="min-h-screen bg-[#0A0A0A] text-white px-4 py-10 flex justify-center">
+      <div className="w-full max-w-2xl mx-auto">
+        <div className="flex justify-center mb-4">
+          <LoginButton />
+        </div>
 
-      <h1>{MESSAGES.TITLE_LIST(reviews.length)}</h1>
-      <a href="/register" style={{ display: 'block', marginBottom: '20px', color: '#3498db' }}>{LIST_PAGE.CREATE_NEW}</a>
+        <div className="text-center border-b-2 border-orange-500 pb-4 mb-8">
+          <h1 className="text-4xl font-extrabold tracking-tight">{MESSAGES.TITLE_LIST(reviews.length)}</h1>
+          <p className="text-slate-400 mt-2 text-sm">{reviews.length}件のラーメンレビュー</p>
+          <a href="/register" className="inline-block mt-4 text-orange-500 hover:text-orange-400 transition underline">{LIST_PAGE.CREATE_NEW}</a>
+        </div>
 
-      <div style={{ marginBottom: '20px', padding: '15px', backgroundColor: '#f8f9fa', borderRadius: '8px', display: 'flex', gap: '10px' }}>
-        <input 
-          type="text" 
-          placeholder="店名やコメントで検索..." 
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          style={{ padding: '8px', flex: 1, borderRadius: '4px', border: '1px solid #ccc' }}
-        />
-        <select 
-          value={selectedGenre} 
-          onChange={(e) => setSelectedGenre(Number(e.target.value))}
-          style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
-        >
-          <option value={0}>{LIST_PAGE.ALL_GENRE}</option>
-          {/* 重複を排除したジャンルの選択肢 */}
-          {Array.from(new Map(reviews.map(r => [r.genre.id, r.genre])).values()).map((genre) => (
-            <option key={genre.id} value={genre.id}>{genre.name}</option>
-          ))}
-        </select>
-      </div>
-
-      <div style={{ display: 'grid', gap: '20px' }}>
-        {filteredReviews.map((review) => (
-          <RamenCard
-            key={review.id} 
-            review={review} 
-            onDelete={handleDelete} 
+        <div className="mb-8 flex flex-col gap-4 bg-slate-800/50 p-6 rounded-2xl border border-slate-700">
+          <input
+            type="text"
+            placeholder="店名やコメントで検索..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full px-4 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:border-orange-500 focus:outline-none"
           />
-        ))}
+          <select
+            value={selectedGenre}
+            onChange={(e) => setSelectedGenre(Number(e.target.value))}
+            className="w-full px-4 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white focus:border-orange-500 focus:outline-none"
+          >
+            <option value={0}>{LIST_PAGE.ALL_GENRE}</option>
+            {Array.from(new Map(reviews.map(r => [r.genre.id, r.genre])).values()).map((genre) => (
+              <option key={genre.id} value={genre.id}>{genre.name}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="space-y-4">
+          {filteredReviews.map((review) => (
+            <RamenCard
+              key={review.id}
+              review={review}
+              onDelete={handleDelete}
+            />
+          ))}
+        </div>
       </div>
     </main>
   );

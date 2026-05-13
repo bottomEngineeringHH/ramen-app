@@ -18,16 +18,22 @@ export class RamenController {
     return this.ramenService.getMasters();
   }
 
-  // GET /ramen (全ラーメンレビュー一覧を取得)
-  @Get()
-  async findAll() {
-    return this.ramenService.findAll();
-  }
-
   // タイムライン取得用
   @Get('timeline')
   getTimeline() {
     return this.ramenService.getTimeline();
+  }
+
+  // ダッシュボード用API
+  @Get('dashboard/:userId')
+  async getDashboard(@Param('userId') userId: string) {
+    return this.ramenService.getDashboard(userId);
+  }
+ 
+  // GET /ramen (全ラーメンレビュー一覧を取得)
+  @Get()
+  async findAll() {
+    return this.ramenService.findAll();
   }
 
   // リアクションのトグル（つけ外し）用

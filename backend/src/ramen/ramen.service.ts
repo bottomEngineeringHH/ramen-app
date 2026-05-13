@@ -245,4 +245,21 @@ export class RamenService {
     
     return result;
   }
+
+  // ダッシュボード用のデータ取得（例: ユーザーのレビュー数やリアクション数など）
+  async getDashboard(userId: string) {
+    return this.prisma.user.findUnique({
+      where: { id: userId },
+        include: {
+          badges: {
+            include: { badge: true },
+          },
+          reviews: {
+            include: { store: true, genre: true },
+            orderBy: { createdAt: 'desc' },
+          },
+        },
+      },
+    );
+  }
 }

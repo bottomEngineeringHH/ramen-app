@@ -223,156 +223,154 @@ function RegisterContent() {
 
   // データの読み込み待ち
   if (isLoading || !masters) {
-    return <main style={{ textAlign: 'center', padding: '50px' }}>{isEditMode ? MESSAGES.L_LOADING_EDIT : MESSAGES.L_LOADING_FORM}</main>;
+    return <main className="min-h-screen bg-[#0A0A0A] flex items-center justify-center"><div className="text-white text-xl">{isEditMode ? MESSAGES.L_LOADING_EDIT : MESSAGES.L_LOADING_FORM}</div></main>;
   }
 
   // --- 4. フォームのレンダリング ---
   return (
-    <main style={{ padding: '20px', maxWidth: '800px', margin: 'auto' }}>
-      <div style={{ marginBottom: '20px' }}>
-        <Link href="/list" style={{ color: '#3498db', textDecoration: 'none' }}>
-          {LIST_PAGE.BACK_TO_LIST}
-        </Link>
-      </div>
+    <main className="min-h-screen bg-[#0A0A0A] text-white px-4 font-sans py-10 flex justify-center">
+      <div className="w-full max-w-2xl mx-auto">
+        <div className="mb-6 text-center">
+          <Link href="/list" className="text-slate-400 hover:text-white transition underline">
+            {LIST_PAGE.BACK_TO_LIST}
+          </Link>
+        </div>
 
-      <h1>{isEditMode ? MESSAGES.TITLE_EDIT(reviewId!) : MESSAGES.TITLE_REGISTER}</h1>
+        <div className="mb-8 text-center border-b-2 border-orange-500 pb-4">
+          <h1 className="text-4xl font-extrabold tracking-tight">{isEditMode ? MESSAGES.TITLE_EDIT(reviewId!) : MESSAGES.TITLE_REGISTER}</h1>
+        </div>
 
-      {message && <div style={{ color: message.startsWith(REGISTER_FORM.ERROR) ? 'red' : 'green', marginBottom: '15px' }}>{message}</div>}
+        {message && <div className={`mb-6 p-4 rounded-lg border text-center ${message.startsWith(REGISTER_FORM.ERROR) ? 'bg-red-900/20 text-red-400 border-red-500/30' : 'bg-green-900/20 text-green-400 border-green-500/30'}`}>{message}</div>}
 
-      <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '15px' }}>
+        <form onSubmit={handleSubmit} className="space-y-6 bg-[#1A1A1A] border border-slate-700 rounded-2xl p-8">
 
         {/* --- 1. 店名 --- */}
         <div>
-          <label htmlFor="storeName">{REGISTER_FORM.STORE_NAME}</label>
+          <label htmlFor="storeName" className="block text-sm font-bold mb-2 text-slate-300">{REGISTER_FORM.STORE_NAME}</label>
           <input
             id="storeName"
             type="text"
             name="storeName"
             value={formData.storeName}
             onChange={handleChange}
-            style={{ borderColor: errors.storeName ? 'red' : 'gray' }}
+            className={`w-full px-4 py-2 bg-slate-800 border rounded-lg text-white transition ${errors.storeName ? 'border-red-500' : 'border-slate-600 focus:border-orange-500'} focus:outline-none`}
           />
-          {errors.storeName && <p style={{ color: 'red', margin: '5px 0 0' }}>{errors.storeName}</p>}
-          <p style={{ marginTop: '5px', fontSize: '0.9em', color: 'green' }}>
-            {REGISTER_FORM.LOCATION_CONFIRMED}
-          </p>
+          {errors.storeName && <p className="text-red-400 text-sm mt-2">{errors.storeName}</p>}
+          <p className="text-slate-400 text-sm mt-2">{REGISTER_FORM.LOCATION_CONFIRMED}</p>
         </div>
 
         {/* --- 2. 場所 (緯度経度は固定値を使用) --- */}
         <div>
-          <label htmlFor="location">{REGISTER_FORM.STATION}</label>
+          <label htmlFor="location" className="block text-sm font-bold mb-2 text-slate-300">{REGISTER_FORM.STATION}</label>
           <input
             id="location"
             type="text"
-            name="nearestStation" // 新しい name 属性 (formDataにはないが、将来的に追加)
+            name="nearestStation"
             onChange={handleChange}
             placeholder={REGISTER_FORM.STATION_PLACEHOLDER}
-            style={{
-              borderColor: errors.latitude ? 'red' : 'gray' // エラーチェックはそのまま
-            }}
+            className={`w-full px-4 py-2 bg-slate-800 border rounded-lg text-white transition ${errors.latitude ? 'border-red-500' : 'border-slate-600 focus:border-orange-500'} focus:outline-none`}
           />
-          {/* 緯度経度が設定されたか否かのメッセージ */}
-          <p style={{ marginTop: '5px', fontSize: '0.9em', color: 'green' }}>
-            {REGISTER_FORM.LOCATION_CONFIRMED}
-          </p>
-          {/* 緯度経度チェックのメッセージを再利用 */}
-          {(errors.latitude) && <p style={{ color: 'red', margin: '5px 0 0' }}>{MESSAGES.E_REQUIRED_STATION}</p>}
+          <p className="text-slate-400 text-sm mt-2">{REGISTER_FORM.LOCATION_CONFIRMED}</p>
+          {(errors.latitude) && <p className="text-red-400 text-sm mt-2">{MESSAGES.E_REQUIRED_STATION}</p>}
         </div>
 
         {/* --- 3. ジャンル (マスタデータ利用) --- */}
         <div>
-          <label htmlFor="genreId">{REGISTER_FORM.GENRE}</label>
+          <label htmlFor="genreId" className="block text-sm font-bold mb-2 text-slate-300">{REGISTER_FORM.GENRE}</label>
           <select
             id="genreId"
             name="genreId"
             value={formData.genreId}
             onChange={handleChange}
-            style={{ borderColor: errors.genreId ? 'red' : 'gray' }}
+            className={`w-full px-4 py-2 bg-slate-800 border rounded-lg text-white transition ${errors.genreId ? 'border-red-500' : 'border-slate-600 focus:border-orange-500'} focus:outline-none`}
           >
             <option value={0}>{REGISTER_FORM.SELECT_PLACEHOLDER}</option>
             {masters?.genres?.map((item: MasterItem) => (
               <option key={item.id} value={item.id}>{item.name}</option>
             ))}
           </select>
-          {errors.genreId && <p style={{ color: 'red', margin: '5px 0 0' }}>{errors.genreId}</p>}
+          {errors.genreId && <p className="text-red-400 text-sm mt-2">{errors.genreId}</p>}
         </div>
 
         {/* --- 4. 麺の種類 --- */}
         <div>
-          <label htmlFor="noodleId">{REGISTER_FORM.NOODLE}</label>
+          <label htmlFor="noodleId" className="block text-sm font-bold mb-2 text-slate-300">{REGISTER_FORM.NOODLE}</label>
           <select
             id="noodleId"
             name="noodleId"
             value={formData.noodleId}
             onChange={handleChange}
-            style={{ borderColor: errors.noodleId ? 'red' : 'gray' }}
+            className={`w-full px-4 py-2 bg-slate-800 border rounded-lg text-white transition ${errors.noodleId ? 'border-red-500' : 'border-slate-600 focus:border-orange-500'} focus:outline-none`}
           >
             <option value={0}>{REGISTER_FORM.SELECT_PLACEHOLDER}</option>
             {masters?.noodleTypes?.map((item: MasterItem) => (
               <option key={item.id} value={item.id}>{item.name}</option>
             ))}
           </select>
-          {errors.noodleId && <p style={{ color: 'red', margin: '5px 0 0' }}>{errors.noodleId}</p>}
+          {errors.noodleId && <p className="text-red-400 text-sm mt-2">{errors.noodleId}</p>}
         </div>
 
         {/* --- 5. オススメの食べるシーン --- */}
         <div>
-          <label htmlFor="eatingSceneId">{REGISTER_FORM.SCENE}</label>
+          <label htmlFor="eatingSceneId" className="block text-sm font-bold mb-2 text-slate-300">{REGISTER_FORM.SCENE}</label>
           <select
             id="eatingSceneId"
             name="eatingSceneId"
             value={formData.eatingSceneId}
             onChange={handleChange}
-            style={{ borderColor: errors.eatingSceneId ? 'red' : 'gray' }}
+            className={`w-full px-4 py-2 bg-slate-800 border rounded-lg text-white transition ${errors.eatingSceneId ? 'border-red-500' : 'border-slate-600 focus:border-orange-500'} focus:outline-none`}
           >
             <option value={0}>{REGISTER_FORM.SELECT_PLACEHOLDER}</option>
             {masters?.eatingScenes?.map((item: MasterItem) => (
               <option key={item.id} value={item.id}>{item.name}</option>
             ))}
           </select>
-          {errors.eatingSceneId && <p style={{ color: 'red', margin: '5px 0 0' }}>{errors.eatingSceneId}</p>}
+          {errors.eatingSceneId && <p className="text-red-400 text-sm mt-2">{errors.eatingSceneId}</p>}
         </div>
 
         {/* --- 6. 雰囲気 (ラジオボタン: 任意) --- */}
-        <div>
-          <label>{REGISTER_FORM.VIBE}</label>
-          <div style={{ display: 'flex', gap: '20px', marginTop: '5px' }}>
-            <label>
+        <div className="text-center">
+          <label className="block text-sm font-bold mb-3 text-slate-300">{REGISTER_FORM.VIBE}</label>
+          <div className="flex gap-6 justify-center">
+            <label className="flex items-center gap-2 cursor-pointer">
               <input
                 type="radio"
                 name="vibe"
                 value={1}
                 checked={formData.vibe === 1}
                 onChange={handleChange}
+                className="w-4 h-4 accent-orange-500"
               />
-              {REGISTER_FORM.VIBE_GOOD}
+              <span className="text-slate-300">{REGISTER_FORM.VIBE_GOOD}</span>
             </label>
-            <label>
+            <label className="flex items-center gap-2 cursor-pointer">
               <input
                 type="radio"
                 name="vibe"
                 value={2}
                 checked={formData.vibe === 2}
                 onChange={handleChange}
+                className="w-4 h-4 accent-orange-500"
               />
-              {REGISTER_FORM.VIBE_NORMAL}
+              <span className="text-slate-300">{REGISTER_FORM.VIBE_NORMAL}</span>
             </label>
-            <label>
+            <label className="flex items-center gap-2 cursor-pointer">
               <input
                 type="radio"
                 name="vibe"
                 value={3}
                 checked={formData.vibe === 3}
                 onChange={handleChange}
+                className="w-4 h-4 accent-orange-500"
               />
-              {REGISTER_FORM.VIBE_DEEP}
+              <span className="text-slate-300">{REGISTER_FORM.VIBE_DEEP}</span>
             </label>
           </div>
         </div>
 
         {/* --- 画像アップロード --- */}
-        <div style={{ marginBottom: '15px' }}>
-          <label>{REGISTER_FORM.PHOTO}</label>
+        <div>
+          <label className="block text-sm font-bold mb-2 text-slate-300">{REGISTER_FORM.PHOTO}</label>
           <input
             type="file"
             accept="image/*"
@@ -383,79 +381,81 @@ function RegisterContent() {
                 setPreviewUrl(URL.createObjectURL(selectedFile));
               }
             }}
+            className="block w-full text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-slate-700 file:text-white hover:file:bg-slate-600"
           />
-          {/* プレビュー表示 */}
           {previewUrl && (
             <img
               src={previewUrl}
               alt="Preview"
-              style={{ width: '100px', marginTop: '10px', borderRadius: '8px' }}
+              className="w-24 mt-3 rounded-lg border border-slate-600 mx-auto"
             />
           )}
         </div>
 
         {/* --- 7. フリーコメント --- */}
         <div>
-          <label htmlFor="comment">{REGISTER_FORM.COMMENT}</label>
+          <label htmlFor="comment" className="block text-sm font-bold mb-2 text-slate-300">{REGISTER_FORM.COMMENT}</label>
           <textarea
             id="comment"
             name="comment"
             value={formData.comment}
             onChange={handleChange}
             rows={4}
-            style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
+            className="w-full px-4 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white focus:border-orange-500 focus:outline-none"
           />
         </div>
 
         {/* --- 8.味変タイムライン入力エリア --- */}
-        <div style={{ marginBottom: '20px', padding: '15px', border: '1px dashed #ccc', borderRadius: '8px', backgroundColor: '#fafafa' }}>
-          <h3 style={{ margin: '0 0 10px 0', fontSize: '1em' }}>{REGISTER_FORM.FLAVOR_CHANGE_TIMELINE}</h3>
-          
+        <div className="p-6 border border-dashed border-slate-600 rounded-lg bg-slate-800/50 text-center">
+          <h3 className="mb-4 text-lg font-bold text-orange-400">{REGISTER_FORM.FLAVOR_CHANGE_TIMELINE}</h3>
+
           {ajihenList.map((ajihen, index) => (
-            <div key={index} style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px', backgroundColor: 'white', padding: '10px', borderRadius: '4px', border: '1px solid #eee' }}>
-              
+            <div key={index} className="flex items-end gap-3 mb-4 p-4 bg-slate-700/50 rounded-lg border border-slate-600 mx-auto max-w-md">
+
               {/* スライダー（0〜100） */}
-              <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                <label style={{ fontSize: '0.8em', color: '#666' }}>{REGISTER_FORM.INJECTION_TIMING} {ajihen.percent}% ({REGISTER_FORM.ARRIVED_RAMEN} 0% 〜 {REGISTER_FORM.FINISH_EATING} 100%)</label>
-                <input 
-                  type="range" 
+              <div className="flex-1">
+                <label className="block text-xs font-bold text-slate-400 mb-2">{REGISTER_FORM.INJECTION_TIMING} {ajihen.percent}%</label>
+                <input
+                  type="range"
                   min="0" max="100" step="5"
                   value={ajihen.percent}
                   onChange={(e) => updateAjihen(index, 'percent', Number(e.target.value))}
-                  style={{ cursor: 'pointer' }}
+                  className="w-full accent-orange-500 cursor-pointer"
                 />
               </div>
 
               {/* 調味料の名前入力 */}
-              <input 
-                type="text" 
-                placeholder={REGISTER_FORM.INGREDIENT_PLACEHOLDER} 
+              <input
+                type="text"
+                placeholder={REGISTER_FORM.INGREDIENT_PLACEHOLDER}
                 value={ajihen.ingredient}
                 onChange={(e) => updateAjihen(index, 'ingredient', e.target.value)}
-                style={{ padding: '8px', border: '1px solid #ccc', borderRadius: '4px', flex: 1 }}
+                className="px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white flex-1 focus:border-orange-500 focus:outline-none"
               />
 
               {/* 削除ボタン */}
-              <button 
-                type="button" 
+              <button
+                type="button"
                 onClick={() => removeAjihen(index)}
-                style={{ color: 'red', background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2em' }}
+                className="text-red-400 hover:text-red-300 transition text-xl font-bold"
               >
                 ✖
               </button>
             </div>
           ))}
 
-          <button 
-            type="button" 
-            onClick={addAjihen}
-            style={{ padding: '8px 15px', backgroundColor: '#e74c3c', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '0.9em' }}
-          >
-            {REGISTER_FORM.ADD_FLAVOR_CHANGE}
-          </button>
+          <div className="flex justify-center">
+            <button
+              type="button"
+              onClick={addAjihen}
+              className="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition font-bold"
+            >
+              {REGISTER_FORM.ADD_FLAVOR_CHANGE}
+            </button>
+          </div>
         </div>
 
-        <button type="submit" style={{ padding: '10px', backgroundColor: isEditMode ? '#f39c12' : '#3498db', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', width: '100%' }}>
+        <button type="submit" className={`w-full px-4 py-3 ${isEditMode ? 'bg-orange-600 hover:bg-orange-700' : 'bg-blue-600 hover:bg-blue-700'} text-white rounded-lg transition font-bold text-lg`}>
           🍜 {isEditMode ? REGISTER_FORM.UPDATE_BUTTON : REGISTER_FORM.REGISTER_BUTTON}
         </button>
 
@@ -463,6 +463,7 @@ function RegisterContent() {
         <input type="hidden" name="latitude" value={formData.latitude} />
         <input type="hidden" name="longitude" value={formData.longitude} />
       </form>
+      </div>
     </main>
   );
 }

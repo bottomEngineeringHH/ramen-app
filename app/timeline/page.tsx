@@ -52,14 +52,16 @@ export default function TimelinePage() {
   if (!reviews) return <div className="text-center text-xl font-bold py-20 animate-pulse">{MESSAGES.L_LOADING_MESHITERO}</div>;
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 py-10 px-4">
-      <div className="max-w-2xl mx-auto">
-        <h1 className="text-3xl font-extrabold mb-8 text-center text-orange-500 border-b border-slate-700 pb-4">
+    <div className="min-h-screen bg-[#0A0A0A] text-white py-10 px-4 flex justify-center">
+      <div className="w-full max-w-2xl mx-auto">
+        <h1 className="text-3xl font-extrabold mb-8 text-center text-orange-500 border-b-2 border-orange-500 pb-4">
           {TIMELINE_PAGE.NEW_MESHITERO}
         </h1>
-        <Link href="/list" className="text-sm text-slate-300 hover:text-white transition underline">
+        <div className="text-center mb-8">
+          <Link href="/list" className="text-slate-400 hover:text-white transition underline">
             {TIMELINE_PAGE.BACK_TO_LIST}
-        </Link>
+          </Link>
+        </div>
 
         {/* 取得したレビューの数だけカードを繰り返し表示 */}
         <div className="space-y-8">
@@ -70,8 +72,8 @@ export default function TimelinePage() {
             const tomorrowCount = review.reactions?.filter((r: any) => r.type === 'TOMORROW').length || 0;
 
             return (
-              <div key={review.id} className="bg-slate-800 rounded-2xl shadow-xl overflow-hidden border border-slate-700 transition-transform hover:-translate-y-1">
-                
+              <div key={review.id} className="bg-[#1A1A1A] rounded-2xl shadow-xl overflow-hidden border border-slate-700 transition-transform hover:-translate-y-1">
+
                 {/* ラーメン画像（画像がない場合はグレーのプレースホルダー） */}
                 {review.imageUrl ? (
                   <img src={review.imageUrl} alt={review.store?.name} className="w-full h-64 object-cover" />
@@ -83,27 +85,28 @@ export default function TimelinePage() {
 
                 <div className="p-6">
                   {/* 店名とジャンル */}
-                  <div className="flex justify-between items-start mb-4">
-                    <h2 className="text-2xl font-bold text-white">{review.store?.name || TIMELINE_PAGE.UNKNOWN_STORE_NAME}</h2>
-                    <span className="bg-orange-600 text-white text-xs px-3 py-1 rounded-full font-bold">
+                  <div className="text-center mb-4">
+                    <h2 className="text-2xl font-bold text-white mb-2">{review.store?.name || TIMELINE_PAGE.UNKNOWN_STORE_NAME}</h2>
+                    <span className="inline-block bg-orange-600 text-white text-xs px-3 py-1 rounded-full font-bold">
                       {review.genre?.name || TIMELINE_PAGE.UNKNOWN_GENRE}
                     </span>
                   </div>
 
                   {/* コメント */}
-                  <p className="text-slate-300 mb-6 leading-relaxed">
+                  <p className="text-slate-300 mb-6 leading-relaxed text-left">
                     {review.comment || TIMELINE_PAGE.NO_COMMENT}
                   </p>
 
                   {/* 🔥 ここが肝！ 味変イベントのハイライト 🔥 */}
                   {review.ajihenEvents && review.ajihenEvents.length > 0 && (
-                    <div className="bg-slate-900 p-4 rounded-lg mb-6 border border-slate-700">
-                      <p className="text-xs text-slate-400 mb-2 font-bold">{TIMELINE_PAGE.AJIHEN_TIMELINE}</p>
-                      <div className="flex flex-wrap gap-2">
+                    <div className="bg-slate-800/50 p-4 rounded-lg mb-6 border border-slate-700">
+                      <p className="text-xs text-slate-400 mb-3 font-bold text-left">{TIMELINE_PAGE.AJIHEN_TIMELINE}</p>
+                      <div className="space-y-2">
                         {review.ajihenEvents.map((ajihen: any) => (
-                          <span key={ajihen.id} className="text-sm bg-slate-700 px-2 py-1 rounded text-orange-300">
-                            {TIMELINE_PAGE.REMAINING} {ajihen.percent}% ➔ {ajihen.ingredient}
-                          </span>
+                          <div key={ajihen.id} className="text-sm bg-slate-700 px-3 py-2 rounded text-orange-300 flex justify-between items-center">
+                            <span>{ajihen.ingredient} ➔</span>
+                            <span className="font-bold">{ajihen.percent}%</span>
+                          </div>
                         ))}
                       </div>
                     </div>
@@ -111,20 +114,20 @@ export default function TimelinePage() {
 
                   {/* リアクションボタン群 */}
                   <div className="flex gap-4 border-t border-slate-700 pt-4">
-                    <button 
-                      onClick={() => handleReact(review.id, 'FIRE')} 
+                    <button
+                      onClick={() => handleReact(review.id, 'FIRE')}
                       className="flex-1 flex justify-center items-center gap-2 bg-slate-700 hover:bg-slate-600 py-2 rounded-xl transition"
                     >
                       🔥 <span className="font-bold">{fireCount > 0 ? fireCount : TIMELINE_PAGE.LOOKS_DELICIOUS}</span>
                     </button>
-                    <button 
-                      onClick={() => handleReact(review.id, 'GARLIC')} 
+                    <button
+                      onClick={() => handleReact(review.id, 'GARLIC')}
                       className="flex-1 flex justify-center items-center gap-2 bg-slate-700 hover:bg-slate-600 py-2 rounded-xl transition"
                     >
                       🧄 <span className="font-bold">{garlicCount > 0 ? garlicCount : TIMELINE_PAGE.GARLIC}</span>
                     </button>
-                    <button 
-                      onClick={() => handleReact(review.id, 'TOMORROW')} 
+                    <button
+                      onClick={() => handleReact(review.id, 'TOMORROW')}
                       className="flex-1 flex justify-center items-center gap-2 bg-slate-700 hover:bg-slate-600 py-2 rounded-xl transition"
                     >
                       🍜 <span className="font-bold">{tomorrowCount > 0 ? tomorrowCount : TIMELINE_PAGE.GOING_TOMORROW}</span>
