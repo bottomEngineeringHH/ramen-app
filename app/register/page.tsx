@@ -10,6 +10,8 @@ import Link from 'next/link';
 import { MESSAGES } from '../constants/messages_ja';
 import { REGISTER_FORM, LIST_PAGE } from '../constants/caption_ja';
 import { signIn } from 'next-auth/react';
+import exifr from 'exifr';
+import heic2any from 'heic2any';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001/ramen';
 
@@ -38,6 +40,10 @@ function RegisterContent() {
 
   // 味変リストのStateと操作関数 ---
   const [ajihenList, setAjihenList] = useState<{ percent: number; ingredient: string }[]>([]);
+
+  // EXIFから取得した情報を保持するためのState
+  const [inferredAddress, setInferredAddress] = useState<string>('');
+  const [photoDate, setPhotoDate] = useState<string>('');
 
   // 新しい味変入力欄を追加する（初期値は50%）
   const addAjihen = () => {
@@ -221,6 +227,61 @@ function RegisterContent() {
     }));
   };
 
+  // 画像アップロード時の拡張ハンドラ (EXIF解析と住所取得を統合)
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+    if (!selectedFile) return;
+
+    // HEIC形式のチェック
+    const isHeic = selectedFile.name.toLowerCase().endsWith('.heic') || selectedFile.type === 'image/heic';
+
+    try {
+      // 表示用のBlob（HEICなら変換、それ以外ならそのまま）
+      let displayFile: Blob | File = selectedFile;
+
+      if (isHeic) {
+        // HEICをJPEGに変換（プレビュー用）
+        const converted = await heic2any({
+          blob: selectedFile,
+          toType: 'image/jpeg',
+          quality: 0.8
+        });
+        // 複数の画像が返る可能性があるため、配列なら最初の要素を取得
+        displayFile = Array.isArray(converted) ? converted[0] : converted;
+      }
+
+      setFile(selectedFile);
+      setPreviewUrl(URL.createObjectURL(displayFile));
+
+      // EXIFデータの解析
+      const exifData = await exifr.parse(selectedFile, true);
+      
+      // 撮影日時の抽出とセット
+      if (exifData?.DateTimeOriginal) {
+        const d = new Date(exifData.DateTimeOriginal);
+        const dateStr = d.toISOString().split('T')[0];
+        setPhotoDate(dateStr);
+      }
+
+      // 位置情報の抽出と逆ジオコーディング(OpenStreetMap Nominatim API)
+      if (exifData?.latitude && exifData?.longitude) {
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${exifData.latitude}&lon=${exifData.longitude}`
+        );
+        const locationData = await res.json();
+        if (locationData?.display_name) {
+          setInferredAddress(locationData.display_name);
+        }
+        // 必要に応じてフォームの緯度経度を更新
+        setFormData(prev => ({ ...prev, latitude: exifData.latitude, longitude: exifData.longitude }));
+      } else {
+        console.log('位置情報なし');
+      }
+    } catch (error) {
+      console.error('EXIF抽出エラー:', error);
+    }
+  };
+
   // データの読み込み待ち
   if (isLoading || !masters) {
     return <main className="min-h-screen bg-[#0A0A0A] flex items-center justify-center"><div className="text-white text-xl">{isEditMode ? MESSAGES.L_LOADING_EDIT : MESSAGES.L_LOADING_FORM}</div></main>;
@@ -244,7 +305,30 @@ function RegisterContent() {
 
         <form onSubmit={handleSubmit} className="space-y-6 bg-[#1A1A1A] border border-slate-700 rounded-2xl p-8">
 
-        {/* --- 1. 店名 --- */}
+        {/* --- 画像アップロード (順番を一番上に移動し、店舗推測のUIを追加) --- */}
+        <div className="p-4 border border-slate-600 rounded-lg bg-slate-800/30">
+          <label className="block text-sm font-bold mb-2 text-slate-300">{REGISTER_FORM.PHOTO}</label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            className="block w-full text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-slate-700 file:text-white hover:file:bg-slate-600 mb-4"
+          />
+          {previewUrl && (
+            <img src={previewUrl} alt="Preview" className="w-24 mt-3 rounded-lg border border-slate-600 mx-auto mb-4" />
+          )}
+
+          {/* EXIF解析結果の表示領域 */}
+          {(photoDate || inferredAddress) && (
+             <div className="mt-4 p-3 bg-slate-700/50 rounded text-sm text-slate-300 border border-slate-600">
+               <p className="font-bold text-orange-400 mb-2">{REGISTER_FORM.GUESS_FROM_PHOTO}</p>
+               {photoDate && <p>{REGISTER_FORM.PHOTO_DATE} {photoDate}</p>}
+               {inferredAddress && <p>{REGISTER_FORM.PHOTO_LOCATION} {inferredAddress}</p>}
+             </div>
+          )}
+        </div>
+
+        {/* --- 店名 --- */}
         <div>
           <label htmlFor="storeName" className="block text-sm font-bold mb-2 text-slate-300">{REGISTER_FORM.STORE_NAME}</label>
           <input
@@ -259,7 +343,7 @@ function RegisterContent() {
           <p className="text-slate-400 text-sm mt-2">{REGISTER_FORM.LOCATION_CONFIRMED}</p>
         </div>
 
-        {/* --- 2. 場所 (緯度経度は固定値を使用) --- */}
+        {/* --- 場所 (緯度経度は固定値を使用) --- */}
         <div>
           <label htmlFor="location" className="block text-sm font-bold mb-2 text-slate-300">{REGISTER_FORM.STATION}</label>
           <input
@@ -274,7 +358,7 @@ function RegisterContent() {
           {(errors.latitude) && <p className="text-red-400 text-sm mt-2">{MESSAGES.E_REQUIRED_STATION}</p>}
         </div>
 
-        {/* --- 3. ジャンル (マスタデータ利用) --- */}
+        {/* --- ジャンル (マスタデータ利用) --- */}
         <div>
           <label htmlFor="genreId" className="block text-sm font-bold mb-2 text-slate-300">{REGISTER_FORM.GENRE}</label>
           <select
@@ -292,7 +376,7 @@ function RegisterContent() {
           {errors.genreId && <p className="text-red-400 text-sm mt-2">{errors.genreId}</p>}
         </div>
 
-        {/* --- 4. 麺の種類 --- */}
+        {/* --- 麺の種類 --- */}
         <div>
           <label htmlFor="noodleId" className="block text-sm font-bold mb-2 text-slate-300">{REGISTER_FORM.NOODLE}</label>
           <select
@@ -310,7 +394,7 @@ function RegisterContent() {
           {errors.noodleId && <p className="text-red-400 text-sm mt-2">{errors.noodleId}</p>}
         </div>
 
-        {/* --- 5. オススメの食べるシーン --- */}
+        {/* --- オススメの食べるシーン --- */}
         <div>
           <label htmlFor="eatingSceneId" className="block text-sm font-bold mb-2 text-slate-300">{REGISTER_FORM.SCENE}</label>
           <select
@@ -328,7 +412,7 @@ function RegisterContent() {
           {errors.eatingSceneId && <p className="text-red-400 text-sm mt-2">{errors.eatingSceneId}</p>}
         </div>
 
-        {/* --- 6. 雰囲気 (ラジオボタン: 任意) --- */}
+        {/* --- 雰囲気 (ラジオボタン: 任意) --- */}
         <div className="text-center">
           <label className="block text-sm font-bold mb-3 text-slate-300">{REGISTER_FORM.VIBE}</label>
           <div className="flex gap-6 justify-center">
@@ -366,30 +450,6 @@ function RegisterContent() {
               <span className="text-slate-300">{REGISTER_FORM.VIBE_DEEP}</span>
             </label>
           </div>
-        </div>
-
-        {/* --- 画像アップロード --- */}
-        <div>
-          <label className="block text-sm font-bold mb-2 text-slate-300">{REGISTER_FORM.PHOTO}</label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => {
-              const selectedFile = e.target.files?.[0];
-              if (selectedFile) {
-                setFile(selectedFile);
-                setPreviewUrl(URL.createObjectURL(selectedFile));
-              }
-            }}
-            className="block w-full text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-slate-700 file:text-white hover:file:bg-slate-600"
-          />
-          {previewUrl && (
-            <img
-              src={previewUrl}
-              alt="Preview"
-              className="w-24 mt-3 rounded-lg border border-slate-600 mx-auto"
-            />
-          )}
         </div>
 
         {/* --- 7. フリーコメント --- */}

@@ -25,6 +25,9 @@ export const REGISTER_FORM = {
   FINISH_EATING: '完食',
   INGREDIENT_PLACEHOLDER: '例: 行者にんにく',
   ADD_FLAVOR_CHANGE: '＋ 味変を追加する',
+  GUESS_FROM_PHOTO: '📸 画像から推測',
+  PHOTO_DATE: '撮影日:',
+  PHOTO_LOCATION: '推測された場所:',
 };
 
 // 一覧画面で使うUIテキスト

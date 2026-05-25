@@ -91,6 +91,12 @@ model RamenReview {
 
   // Reviewに対してReactionが複数つく関係性を定義
   reactions    Reaction[]
+
+  // 撮影日・訪問日用。EXIFの日時を格納
+  visitedAt DateTime?
+
+  // 逆ジオコーディングで得られた住所情報用
+  address        String?
 }
 
 

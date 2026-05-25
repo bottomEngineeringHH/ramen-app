@@ -1,7 +1,7 @@
 // backend/src/ramen/dto/create-ramen.dto.ts
 
 // NestJSの入力検証ライブラリから必要なデコレーターをインポート
-import { IsArray, IsString, IsNumber, IsOptional, IsNotEmpty, IsInt, Min, ValidateNested } from 'class-validator';
+import { IsArray, IsString, IsNumber, IsOptional, IsNotEmpty, IsInt, Min, ValidateNested, IsDateString } from 'class-validator';
 import { Type } from 'class-transformer';
 
 class AjihenDto {
@@ -63,6 +63,15 @@ export class CreateRamenDto {
   @IsOptional()
   @IsInt()
   vibe?: number; // 雰囲気の評価（例: 1, 2, 3）
+
+  // 追加フィールド
+  @IsDateString()
+  @IsOptional()
+  visitedAt?: string;
+
+  @IsString()
+  @IsOptional()
+  address?: string;
 
   @IsOptional()
   @IsArray()

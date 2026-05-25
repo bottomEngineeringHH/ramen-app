@@ -13,6 +13,7 @@ export async function POST(request: Request) {
   // Vercel Blobに画像を保存
   const blob = await put(filename, request.body, {
     access: 'public',
+    addRandomSuffix: true, // ファイル名の末尾にランダムな文字列を付与して重複を回避する
   });
 
   // 保存した画像のURLを返す
